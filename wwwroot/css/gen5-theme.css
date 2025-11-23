@@ -1,0 +1,107 @@
+/* Pokemon Gen 5 (Black/White) Theme Overrides for Pokepaste Page */
+
+/* Gen 5 Collapsible Info Box */
+.gen5-info-box {
+    background: linear-gradient(135deg, #1A2B4A 0%, #00A8A8 100%);
+    border: 3px solid #B8F818;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.gen5-info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        repeating-linear-gradient(45deg,
+            transparent,
+            transparent 10px,
+            rgba(184, 248, 24, 0.03) 10px,
+            rgba(184, 248, 24, 0.03) 20px);
+    pointer-events: none;
+}
+
+.gen5-summary {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 0 #000000;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+}
+
+.gen5-summary::-webkit-details-marker {
+    display: none;
+}
+
+.gen5-summary:hover {
+    background: rgba(184, 248, 24, 0.15);
+}
+
+.gen5-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 4px rgba(184, 248, 24, 0.6));
+}
+
+.gen5-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    color: #B8F818;
+    font-size: 0.9rem;
+}
+
+details[open] .gen5-arrow {
+    transform: rotate(180deg);
+}
+
+.gen5-content {
+    padding: 1.5rem;
+    color: #D8D8D8;
+    border-top: 2px solid #B8F818;
+    position: relative;
+    z-index: 1;
+}
+
+.gen5-content h3 {
+    color: #B8F818;
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    margin-top: 1rem;
+    text-shadow: 1px 1px 0 #000000;
+}
+
+.gen5-content h3:first-child {
+    margin-top: 0;
+}
+
+.gen5-content p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.gen5-content ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.gen5-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.gen5-content strong {
+    color: #C8FF28;
+    font-weight: 600;
+}
