@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Acromo",
   "resources": {
-    "hash": "sha256-oUc55PZO7lxKMKUMbQ55eoIOPSXU2vGW3izh7aTPAuw=",
+    "hash": "sha256-TnFoDeDawBMMdt4R7IoAq0hjNcdlPI7mc5mot+EOjkU=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-vtotCeXt2UD6oc459laJT32vBgigZ+eLoUmdeFkvYDk="
     },
@@ -49,7 +49,7 @@
       "System.Text.Json.wasm": "sha256-7UthE1CXKL46fVObMsILNFbMnomJCRkriTggl8fheW8=",
       "System.Text.RegularExpressions.wasm": "sha256-N5iEwt2bfvrglh1Ef1pkKFXQo82wOkhE64+4FGK7Ru8=",
       "System.Private.CoreLib.wasm": "sha256-v8yuHBLBvM+9fzlQvTgH7k3huP21SbZrWs3sa8K+7RI=",
-      "Acromo.wasm": "sha256-I8S+7PWEBazPqchb1NJru9fpaPpvDzeN6OJUArlAB4Y="
+      "Acromo.wasm": "sha256-v+3O5L7ameP4pdLUDLPtRHsP49HcQeiRh958WDqleQE="
     }
   },
   "cacheBootResources": true,
