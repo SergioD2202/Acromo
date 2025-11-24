@@ -434,6 +434,7 @@ main {
 
 .counter-message {
     padding: 1rem;
+    margin-top: auto;
     border-radius: 8px;
     text-align: center;
     font-weight: 500;
@@ -532,6 +533,7 @@ main {
 
 .data-table th {
     padding: 1rem;
+    margin-top: auto;
     text-align: left;
     font-weight: 600;
     color: var(--text-primary);
@@ -540,6 +542,7 @@ main {
 
 .data-table td {
     padding: 1rem;
+    margin-top: auto;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-secondary);
 }
@@ -693,6 +696,7 @@ main {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
+    margin-top: auto;
     background: var(--dark-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -839,6 +843,7 @@ main {
     background: var(--danger-color);
     color: white;
     padding: 1rem;
+    margin-top: auto;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -877,6 +882,7 @@ main {
     width: 100%;
     min-height: 300px;
     padding: 1rem;
+    margin-top: auto;
     background: var(--dark-bg);
     border: 2px solid var(--border-color);
     border-radius: 8px;
@@ -1082,6 +1088,7 @@ main {
     background: var(--dark-bg);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
 }
 
 .pokemon-moves h4 {
@@ -1156,6 +1163,9 @@ main {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .pokemon-card::before {
@@ -1277,6 +1287,7 @@ main {
     background: var(--dark-bg);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
 }
 
 .pokemon-moves h4 {
@@ -1456,6 +1467,7 @@ main {
     border-left: 3px solid var(--primary-color);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
@@ -1651,6 +1663,7 @@ main {
     border-left: 3px solid var(--primary-color);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
@@ -1846,6 +1859,7 @@ main {
     border-left: 3px solid var(--primary-color);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
@@ -1958,6 +1972,17 @@ main {
     line-height: 1.6;
 }
 
+.archetype-warning {
+    color: var(--warning-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(251, 191, 36, 0.1);
+    border-left: 3px solid var(--warning-color);
+    border-radius: 4px;
+}
+
 .rating-checklist {
     background: var(--dark-surface);
     border: 1px solid var(--border-color);
@@ -1982,6 +2007,7 @@ main {
     border-left: 4px solid var(--border-color);
     border-radius: 8px;
     padding: 1rem;
+    margin-top: auto;
     margin-bottom: 1rem;
     transition: var(--transition);
 }
@@ -2272,4 +2298,52 @@ main {
 .type-border-fairy {
     border-left-color: #EE99AC !important;
     border-bottom-color: #EE99AC !important;
+}
+
+.pokemon-moves {
+    margin-top: auto;
+}
+.immunity-section {
+    background: var(--dark-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.immunity-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.immunity-item {
+    background: var(--dark-bg);
+    border-left: 4px solid var(--info-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.immunity-item:hover {
+    background: var(--dark-surface-light);
+}
+
+.immunity-item:last-child {
+    margin-bottom: 0;
+}
+
+.immunity-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.immunity-text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    flex: 1;
 }

@@ -105,3 +105,58 @@ details[open] .gen5-arrow {
     color: #C8FF28;
     font-weight: 600;
 }
+
+/* URL Input Section */
+.url-input-section {
+    background: rgba(26, 43, 74, 0.8);
+    border: 2px solid #B8F818;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.url-input-section h2 {
+    color: #B8F818;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    text-shadow: 1px 1px 0 #000000;
+}
+
+.url-input-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.gen5-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #4A6B8A;
+    color: #FFFFFF;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.gen5-input:focus {
+    border-color: #B8F818;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(184, 248, 24, 0.2);
+}
+
+/* Manual Input Details Override */
+.manual-input-details {
+    margin-bottom: 2rem;
+}
+
+.manual-input-details .gen5-content {
+    padding: 0;
+    border-top: none;
+}
+
+.manual-input-details .input-section {
+    background: transparent;
+    box-shadow: none;
+    padding: 1.5rem;
+    margin-bottom: 0;
+}
