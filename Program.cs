@@ -13,4 +13,8 @@ builder.Services.AddScoped<PokeAPIService>();
 builder.Services.AddScoped<PokeSpriteService>();
 builder.Services.AddScoped<PokepasteService>();
 
+// Register Logic Services
+builder.Services.AddScoped<TeamParserService>();
+builder.Services.AddScoped<TeamAnalysisService>();
+
 await builder.Build().RunAsync();
