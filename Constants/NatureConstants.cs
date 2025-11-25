@@ -1,0 +1,34 @@
+namespace Acromo;
+
+public static class NatureConstants
+{
+    // Map of Nature -> (Boosted Stat, Hindered Stat)
+    public static readonly Dictionary<string, (string Boosted, string Hindered)> NatureMap = new()
+    {
+        { "Adamant", ("Atk", "SpA") }, 
+        { "Bashful", ("", "") }, 
+        { "Bold", ("Def", "Atk") },
+        { "Brave", ("Atk", "Spe") }, 
+        { "Calm", ("SpD", "Atk") }, 
+        { "Careful", ("SpD", "SpA") },
+        { "Docile", ("", "") }, 
+        { "Gentle", ("SpD", "Def") }, 
+        { "Hardy", ("", "") },
+        { "Hasty", ("Spe", "Def") }, 
+        { "Impish", ("Def", "SpA") }, 
+        { "Jolly", ("Spe", "SpA") },
+        { "Lax", ("Def", "SpD") }, 
+        { "Lonely", ("Atk", "Def") }, 
+        { "Mild", ("SpA", "Def") },
+        { "Modest", ("SpA", "Atk") }, 
+        { "Naive", ("Spe", "SpD") }, 
+        { "Naughty", ("Atk", "SpD") },
+        { "Quiet", ("SpA", "Spe") }, 
+        { "Quirky", ("", "") }, 
+        { "Rash", ("SpA", "SpD") },
+        { "Relaxed", ("Def", "Spe") }, 
+        { "Sassy", ("SpD", "Spe") }, 
+        { "Serious", ("", "") },
+        { "Timid", ("Spe", "Atk") }
+    };
+}

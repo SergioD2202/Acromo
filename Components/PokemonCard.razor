@@ -1,0 +1,117 @@
+@namespace Acromo
+@* Pokemon Card Component - Displays a single Pokemon with all its details *@
+
+<div class="pokemon-card">
+    <div class="pokemon-header">
+        <div class="pokemon-sprite-container">
+            @if (!string.IsNullOrEmpty(Pokemon.SpriteUrl))
+            {
+                <img src="@Pokemon.SpriteUrl" alt="@Pokemon.Name" class="pokemon-sprite" />
+            }
+            else
+            {
+                <div class="sprite-placeholder">?</div>
+            }
+        </div>
+        <div class="pokemon-title">
+            <h3>
+                @(!string.IsNullOrEmpty(Pokemon.Nickname) ? Pokemon.Nickname : Pokemon.Name) 
+                @if (!string.IsNullOrEmpty(Pokemon.Nickname))
+                {
+                    <span style="font-size: 0.8em; color: var(--text-muted);">(@Pokemon.Name)</span>
+                }
+                @Pokemon.Gender
+            </h3>
+            @if (Pokemon.Types.Any())
+            {
+                <div class="pokemon-types">
+                    @foreach (var type in Pokemon.Types)
+                    {
+                        <span class="type-badge type-@type.ToLower()">@type</span>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(Pokemon.TeraType))
+                {
+                    <div class="pokemon-tera-type" style="margin-top: 4px;">
+                        <span class="type-badge type-@Pokemon.TeraType.ToLower()" style="font-size: 0.75rem; padding: 2px 8px; opacity: 0.9;">Tera @Pokemon.TeraType</span>
+                    </div>
+                }
+            }
+            @if (!string.IsNullOrEmpty(Pokemon.Item))
+            {
+                <div class="pokemon-item-container">
+                    @if (!string.IsNullOrEmpty(Pokemon.ItemSpriteUrl))
+                    {
+                        <img src="@Pokemon.ItemSpriteUrl" alt="@Pokemon.Item" class="item-sprite" />
+                    }
+                    <p class="pokemon-item">@@ @Pokemon.Item</p>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="pokemon-details">
+        @if (!string.IsNullOrEmpty(Pokemon.Ability))
+        {
+            <div class="detail-row">
+                <span class="detail-label">Ability:</span>
+                <span class="detail-value">@Pokemon.Ability</span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Pokemon.Level))
+        {
+            <div class="detail-row">
+                <span class="detail-label">Level:</span>
+                <span class="detail-value">@Pokemon.Level</span>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Pokemon.EVs))
+        {
+            <div class="detail-row">
+                <span class="detail-label">EVs:</span>
+                <span class="detail-value">@Pokemon.EVs</span>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Pokemon.IVs))
+        {
+            <div class="detail-row">
+                <span class="detail-label">IVs:</span>
+                <span class="detail-value">@Pokemon.IVs</span>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Pokemon.Nature))
+        {
+            <div class="detail-row">
+                <span class="detail-label">Nature:</span>
+                <span class="detail-value nature">@Pokemon.Nature</span>
+            </div>
+        }
+    </div>
+    
+    @if (Pokemon.Moves.Any())
+    {
+        <div class="pokemon-moves">
+            <h4>Moves:</h4>
+            <ul class="move-list">
+                @foreach (var move in Pokemon.Moves)
+                {
+                    <li class="@(string.IsNullOrEmpty(move.Type) ? "" : $"type-border-{move.Type.ToLower()}")">
+                        @move.Name
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The Pokemon data to display in the card
+    /// </summary>
+    [Parameter]
+    public PokemonData Pokemon { get; set; } = null!;
+}

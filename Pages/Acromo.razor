@@ -1,6 +1,9 @@
 @page "/"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@inject PokeAPIService PokeAPI
+@inject PokeSpriteService PokeSprite
+@inject PokepasteService Pokepaste
 @using System.Text.RegularExpressions
 
 <PageTitle>Acromo - Teambuilding Helper</PageTitle>
@@ -112,112 +115,7 @@
             <div class="pokemon-grid">
                 @foreach (var pokemon in pokemonTeam)
                 {
-                    <div class="pokemon-card">
-                        <div class="pokemon-header">
-                            <div class="pokemon-sprite-container">
-                                @if (!string.IsNullOrEmpty(pokemon.SpriteUrl))
-                                {
-                                    <img src="@pokemon.SpriteUrl" alt="@pokemon.Name" class="pokemon-sprite" />
-                                }
-                                else
-                                {
-                                    <div class="sprite-placeholder">?</div>
-                                }
-                            </div>
-                            <div class="pokemon-title">
-                                <h3>
-                                    @(!string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Nickname : pokemon.Name) 
-                                    @if (!string.IsNullOrEmpty(pokemon.Nickname))
-                                    {
-                                        <span style="font-size: 0.8em; color: var(--text-muted);">(@pokemon.Name)</span>
-                                    }
-                                    @pokemon.Gender
-                                </h3>
-                                @if (pokemon.Types.Any())
-                                {
-                                    <div class="pokemon-types">
-                                        @foreach (var type in pokemon.Types)
-                                        {
-                                            <span class="type-badge type-@type.ToLower()">@type</span>
-                                        }
-                                    </div>
-                                    @if (!string.IsNullOrEmpty(pokemon.TeraType))
-                                    {
-                                        <div class="pokemon-tera-type" style="margin-top: 4px;">
-                                            <span class="type-badge type-@pokemon.TeraType.ToLower()" style="font-size: 0.75rem; padding: 2px 8px; opacity: 0.9;">Tera @pokemon.TeraType</span>
-                                        </div>
-                                    }
-                                }
-                                @if (!string.IsNullOrEmpty(pokemon.Item))
-                                {
-                                    <div class="pokemon-item-container">
-                                        @if (!string.IsNullOrEmpty(pokemon.ItemSpriteUrl))
-                                        {
-                                            <img src="@pokemon.ItemSpriteUrl" alt="@pokemon.Item" class="item-sprite" />
-                                        }
-                                        <p class="pokemon-item">@@ @pokemon.Item</p>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        
-                        <div class="pokemon-details">
-                            @if (!string.IsNullOrEmpty(pokemon.Ability))
-                            {
-                                <div class="detail-row">
-                                    <span class="detail-label">Ability:</span>
-                                    <span class="detail-value">@pokemon.Ability</span>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(pokemon.Level))
-                            {
-                                <div class="detail-row">
-                                    <span class="detail-label">Level:</span>
-                                    <span class="detail-value">@pokemon.Level</span>
-                                </div>
-                            }
-                            
-                            @if (!string.IsNullOrEmpty(pokemon.EVs))
-                            {
-                                <div class="detail-row">
-                                    <span class="detail-label">EVs:</span>
-                                    <span class="detail-value">@pokemon.EVs</span>
-                                </div>
-                            }
-                            
-                            @if (!string.IsNullOrEmpty(pokemon.IVs))
-                            {
-                                <div class="detail-row">
-                                    <span class="detail-label">IVs:</span>
-                                    <span class="detail-value">@pokemon.IVs</span>
-                                </div>
-                            }
-                            
-                            @if (!string.IsNullOrEmpty(pokemon.Nature))
-                            {
-                                <div class="detail-row">
-                                    <span class="detail-label">Nature:</span>
-                                    <span class="detail-value nature">@pokemon.Nature</span>
-                                </div>
-                            }
-                        </div>
-                        
-                        @if (pokemon.Moves.Any())
-                        {
-                            <div class="pokemon-moves">
-                                <h4>Moves:</h4>
-                                <ul class="move-list">
-                                    @foreach (var move in pokemon.Moves)
-                                    {
-                                        <li class="@(string.IsNullOrEmpty(move.Type) ? "" : $"type-border-{move.Type.ToLower()}")">
-                                            @move.Name
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </div>
+                    <PokemonCard Pokemon="@pokemon" />
                 }
             </div>
         </div>
@@ -359,90 +257,22 @@
     private string errorMessage = "";
     private TypeAnalysis? typeAnalysis = null;
     private TeamRating? teamRating = null;
-    private Dictionary<string, string> moveTypeCache = new();
 
-    private class PokemonData
-    {
-        public string Name { get; set; } = "";
-        public string Nickname { get; set; } = "";
-        public string Gender { get; set; } = "";
-        public string Item { get; set; } = "";
-        public string Ability { get; set; } = "";
-        public string TeraType { get; set; } = "";
-        public string EVs { get; set; } = "";
-        public string IVs { get; set; } = "";
-        public string Level { get; set; } = "";
-        public string Nature { get; set; } = "";
 
-        public List<MoveInfo> Moves { get; set; } = new();
-        public string SpriteUrl { get; set; } = "";
-        public List<string> Types { get; set; } = new();
-        public string ItemSpriteUrl { get; set; } = "";
-        
-        // Base stats from PokeAPI
-        public int BaseHP { get; set; } = 0;
-        public int BaseAttack { get; set; } = 0;
-        public int BaseDefense { get; set; } = 0;
-        public int BaseSpecialAttack { get; set; } = 0;
-        public int BaseSpecialDefense { get; set; } = 0;
-        public int BaseSpeed { get; set; } = 0;
-    }
-
-    private class MoveInfo
-    {
-        public string Name { get; set; } = "";
-        public string Type { get; set; } = "";
-    }
-    
-    private class TeamRating
-    {
-        public string Archetype { get; set; } = "Balanced";
-        public string ArchetypeDescription { get; set; } = "";
-        public List<CheckResult> CheckResults { get; set; } = new();
-        public int PassedChecks { get; set; }
-        public int TotalChecks { get; set; }
-        public string Grade { get; set; } = "";
-        public string GradeDescription { get; set; } = "";
-    }
-    
-    private class CheckResult
-    {
-        public string Name { get; set; } = "";
-        public string Status { get; set; } = ""; // Pass, Fail, Skip, Warning
-        public string Description { get; set; } = "";
-        public string Details { get; set; } = "";
-    }
     
     private string GetCheckIcon(string status)
     {
         return status switch
         {
-            "Pass" => "✅",
-            "Fail" => "❌",
-            "Skip" => "⏭️",
-            "Warning" => "⚠️",
+            CheckStatus.Pass => "✅",
+            CheckStatus.Fail => "❌",
+            CheckStatus.Skip => "⏭️",
+            CheckStatus.Warning => "⚠️",
             _ => "❓"
         };
     }
     
-    private class TypeAnalysis
-    {
-        public List<string> NeutralCoverageTypes { get; set; } = new();
-        public List<SuperEffectiveCoverage> SuperEffectiveCoverageTypes { get; set; } = new();
-        public List<string> ImmunityNotes { get; set; } = new();
-    }
-    
-    private class SuperEffectiveCoverage
-    {
-        public string Type { get; set; } = "";
-        public int Count { get; set; }
-        public List<string> AffectedPokemon { get; set; } = new();
-    }
 
-    private class AllOriginsResponse
-    {
-        public string Contents { get; set; } = "";
-    }
 
     private async Task FetchTeamFromUrl()
     {
@@ -452,7 +282,7 @@
             return;
         }
 
-        if (!pokepasteUrl.Contains("pokepast.es"))
+        if (!Pokepaste.IsValidPokepasteUrl(pokepasteUrl))
         {
             errorMessage = "Please enter a valid pokepast.es URL!";
             return;
@@ -464,60 +294,16 @@
 
         try
         {
-            // Use AllOrigins as CORS proxy
-            var encodedUrl = System.Web.HttpUtility.UrlEncode(pokepasteUrl);
-            var proxyUrl = $"https://api.allorigins.win/get?url={encodedUrl}";
+            var teamText = await Pokepaste.FetchTeamFromUrlAsync(pokepasteUrl);
             
-            var response = await Http.GetFromJsonAsync<AllOriginsResponse>(proxyUrl);
-            
-            if (response != null && !string.IsNullOrEmpty(response.Contents))
+            if (!string.IsNullOrWhiteSpace(teamText))
             {
-                var htmlContent = response.Contents;
-                
-                // Parse HTML to find <article> tags and extract text from <pre> tags
-                // Regex to find content inside <pre> tags that are likely inside articles
-                // Since the structure is simple, we can look for <pre>...</pre> blocks
-                
-                var matches = Regex.Matches(htmlContent, @"<pre[^>]*>(.*?)</pre>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                
-                if (matches.Count > 0)
-                {
-                    var extractedTeam = new System.Text.StringBuilder();
-                    
-                    foreach (Match match in matches)
-                    {
-                        // Decode HTML entities (like &lt; &gt; etc)
-                        var rawText = match.Groups[1].Value;
-                        
-                        // Remove HTML tags inside pre if any (like spans for colors)
-                        var cleanText = Regex.Replace(rawText, @"<[^>]+>", "");
-                        
-                        // Decode HTML entities
-                        cleanText = System.Net.WebUtility.HtmlDecode(cleanText);
-                        
-                        extractedTeam.AppendLine(cleanText.Trim());
-                        extractedTeam.AppendLine(); // Add spacing between mons
-                    }
-                    
-                    teamInput = extractedTeam.ToString().Trim();
-                    
-                    if (string.IsNullOrWhiteSpace(teamInput))
-                    {
-                         errorMessage = "Could not extract team data from the URL. Please try pasting manually.";
-                    }
-                    else
-                    {
-                        await ParseTeam();
-                    }
-                }
-                else
-                {
-                    errorMessage = "No Pokemon data found in the URL. Please try pasting manually.";
-                }
+                teamInput = teamText;
+                await ParseTeam();
             }
             else
             {
-                errorMessage = "Failed to fetch data from the URL. Please check the link or try pasting manually.";
+                errorMessage = "Could not extract team data from the URL. Please try pasting manually.";
             }
         }
         catch (Exception ex)
@@ -688,14 +474,7 @@
     {
         try
         {
-            // Convert Pokemon name to API format (lowercase, replace spaces with hyphens)
-            var apiName = pokemon.Name.ToLower()
-                .Replace(" ", "-")
-                .Replace("'", "")
-                .Replace(".", "")
-                .Replace(":", "");
-            
-            var response = await Http.GetFromJsonAsync<PokeApiResponse>($"https://pokeapi.co/api/v2/pokemon/{apiName}");
+            var response = await PokeAPI.GetPokemonDataAsync(pokemon.Name);
             
             if (response?.Sprites?.FrontDefault != null)
             {
@@ -747,104 +526,17 @@
     
     private async Task FetchMoveType(MoveInfo move)
     {
-        // Check cache first
-        if (moveTypeCache.ContainsKey(move.Name.ToLower()))
+        var moveType = await PokeAPI.GetMoveTypeAsync(move.Name);
+        if (moveType != null)
         {
-            move.Type = moveTypeCache[move.Name.ToLower()];
-            return;
-        }
-
-        try
-        {
-            // Convert move name to API format
-            var apiName = move.Name.ToLower()
-                .Replace(" ", "-")
-                .Replace("'", "")
-                .Replace(".", "")
-                .Replace(":", "");
-            
-            var options = new System.Text.Json.JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            var response = await Http.GetFromJsonAsync<MoveApiResponse>($"https://pokeapi.co/api/v2/move/{apiName}", options);
-            
-            if (response?.Type?.Name != null)
-            {
-                Console.WriteLine($"Fetched type for {move.Name}: {response.Type.Name}");
-                move.Type = response.Type.Name;
-                moveTypeCache[move.Name.ToLower()] = move.Type;
-            }
-            else
-            {
-                Console.WriteLine($"Failed to fetch type for {move.Name} (Response or Type was null)");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching move type for {move.Name}: {ex.Message}");
+            move.Type = moveType;
         }
     }
     
     private async Task FetchItemSprite(PokemonData pokemon)
     {
-        try
-        {
-            // Convert item name to API format (lowercase, replace spaces with hyphens)
-            var apiItemName = pokemon.Item.ToLower()
-                .Replace(" ", "-")
-                .Replace("'", "")
-                .Replace(".", "")
-                .Replace(":", "");
-            
-            // Special case for Booster Energy - use pokepast.es sprite
-            if (apiItemName == "booster-energy")
-            {
-                pokemon.ItemSpriteUrl = "https://pokepast.es/img/items/1880.png";
-                return;
-            }
-            
-            // Try PokeAPI first
-            try
-            {
-                var response = await Http.GetFromJsonAsync<ItemApiResponse>($"https://pokeapi.co/api/v2/item/{apiItemName}");
-                
-                if (response?.Sprites?.Default != null)
-                {
-                    pokemon.ItemSpriteUrl = response.Sprites.Default;
-                    return;
-                }
-            }
-            catch
-            {
-                // PokeAPI failed, continue to fallbacks
-            }
-            
-            // Fallback 1: Try PokeAPI sprites GitHub directly (works for newer items like Booster Energy)
-            try
-            {
-                var githubUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/{apiItemName}.png";
-                var testResponse = await Http.GetAsync(githubUrl);
-                if (testResponse.IsSuccessStatusCode)
-                {
-                    pokemon.ItemSpriteUrl = githubUrl;
-                    return;
-                }
-            }
-            catch
-            {
-                // GitHub sprites failed, continue to next fallback
-            }
-            
-            // Fallback 2: PokéSprite database for items not in PokeAPI
-            pokemon.ItemSpriteUrl = $"https://raw.githubusercontent.com/msikma/pokesprite/master/items/hold-item/{apiItemName}.png";
-        }
-        catch
-        {
-            // If all fails, leave it empty
-            pokemon.ItemSpriteUrl = "";
-        }
+        var spriteUrl = await PokeSprite.GetItemSpriteAsync(pokemon.Item);
+        pokemon.ItemSpriteUrl = spriteUrl ?? "";
     }
     
     private int GetEVValue(PokemonData pokemon, string statName)
@@ -876,24 +568,12 @@
     {
         if (string.IsNullOrEmpty(nature)) return 1.0;
         
-        // Map of Nature -> (Boosted, Hindered)
-        var natureMap = new Dictionary<string, (string, string)>
-        {
-            { "Adamant", ("Atk", "SpA") }, { "Bashful", ("", "") }, { "Bold", ("Def", "Atk") },
-            { "Brave", ("Atk", "Spe") }, { "Calm", ("SpD", "Atk") }, { "Careful", ("SpD", "SpA") },
-            { "Docile", ("", "") }, { "Gentle", ("SpD", "Def") }, { "Hardy", ("", "") },
-            { "Hasty", ("Spe", "Def") }, { "Impish", ("Def", "SpA") }, { "Jolly", ("Spe", "SpA") },
-            { "Lax", ("Def", "SpD") }, { "Lonely", ("Atk", "Def") }, { "Mild", ("SpA", "Def") },
-            { "Modest", ("SpA", "Atk") }, { "Naive", ("Spe", "SpD") }, { "Naughty", ("Atk", "SpD") },
-            { "Quiet", ("SpA", "Spe") }, { "Quirky", ("", "") }, { "Rash", ("SpA", "SpD") },
-            { "Relaxed", ("Def", "Spe") }, { "Sassy", ("SpD", "Spe") }, { "Serious", ("", "") },
-            { "Timid", ("Spe", "Atk") }
-        };
+        var natureMap = NatureConstants.NatureMap;
 
         if (natureMap.TryGetValue(nature, out var modifiers))
         {
-            if (modifiers.Item1 == statName) return 1.1;
-            if (modifiers.Item2 == statName) return 0.9;
+            if (modifiers.Boosted == statName) return 1.1;
+            if (modifiers.Hindered == statName) return 0.9;
         }
         
         return 1.0;
@@ -929,32 +609,11 @@
     private TypeAnalysis CalculateTypeAnalysis()
     {
         var analysis = new TypeAnalysis();
-        var allTypes = new[] { "Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", 
-                               "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy" };
+        var allTypes = TypeEffectiveness.AllTypes.Select(t => char.ToUpper(t[0]) + t.Substring(1)).ToArray();
         
-        // Abilities that grant immunities
-        var immunityAbilities = new Dictionary<string, string[]>
-        {
-            { "Flash Fire", new[] { "fire" } },
-            { "Water Absorb", new[] { "water" } },
-            { "Dry Skin", new[] { "water" } },
-            { "Storm Drain", new[] { "water" } },
-            { "Sap Sipper", new[] { "grass" } },
-            { "Levitate", new[] { "ground" } },
-            { "Volt Absorb", new[] { "electric" } },
-            { "Lightning Rod", new[] { "electric" } },
-            { "Motor Drive", new[] { "electric" } },
-            { "Good as Gold", new[] { "status" } }, // Immune to status moves
-            { "Thick Fat", new string[] { } }, // Reduces damage but doesn't grant immunity
-            { "Wonder Guard", new string[] { } }, // Special case
-        };
-        
-        // Items that grant immunities
-        var immunityItems = new Dictionary<string, string[]>
-        {
-            { "Air Balloon", new[] { "ground" } },
-            { "Heavy-Duty Boots", new string[] { } }, // Entry hazards, not type immunity
-        };
+        // Abilities and items that grant immunities
+        var immunityAbilities = AbilityConstants.ImmunityAbilities;
+        var immunityItems = ItemConstants.ImmunityItems;
         
         foreach (var attackType in allTypes)
         {
@@ -1058,28 +717,7 @@
     
     private double GetSingleTypeEffectiveness(string attackType, string defenderType)
     {
-        // Type effectiveness chart
-        var typeChart = new Dictionary<string, Dictionary<string, double>>
-        {
-            ["normal"] = new() { ["rock"] = 0.5, ["ghost"] = 0.0, ["steel"] = 0.5 },
-            ["fire"] = new() { ["fire"] = 0.5, ["water"] = 0.5, ["grass"] = 2.0, ["ice"] = 2.0, ["bug"] = 2.0, ["rock"] = 0.5, ["dragon"] = 0.5, ["steel"] = 2.0 },
-            ["water"] = new() { ["fire"] = 2.0, ["water"] = 0.5, ["grass"] = 0.5, ["ground"] = 2.0, ["rock"] = 2.0, ["dragon"] = 0.5 },
-            ["electric"] = new() { ["water"] = 2.0, ["electric"] = 0.5, ["grass"] = 0.5, ["ground"] = 0.0, ["flying"] = 2.0, ["dragon"] = 0.5 },
-            ["grass"] = new() { ["fire"] = 0.5, ["water"] = 2.0, ["grass"] = 0.5, ["poison"] = 0.5, ["ground"] = 2.0, ["flying"] = 0.5, ["bug"] = 0.5, ["rock"] = 2.0, ["dragon"] = 0.5, ["steel"] = 0.5 },
-            ["ice"] = new() { ["fire"] = 0.5, ["water"] = 0.5, ["grass"] = 2.0, ["ice"] = 0.5, ["ground"] = 2.0, ["flying"] = 2.0, ["dragon"] = 2.0, ["steel"] = 0.5 },
-            ["fighting"] = new() { ["normal"] = 2.0, ["ice"] = 2.0, ["poison"] = 0.5, ["flying"] = 0.5, ["psychic"] = 0.5, ["bug"] = 0.5, ["rock"] = 2.0, ["ghost"] = 0.0, ["dark"] = 2.0, ["steel"] = 2.0, ["fairy"] = 0.5 },
-            ["poison"] = new() { ["grass"] = 2.0, ["poison"] = 0.5, ["ground"] = 0.5, ["rock"] = 0.5, ["ghost"] = 0.5, ["steel"] = 0.0, ["fairy"] = 2.0 },
-            ["ground"] = new() { ["fire"] = 2.0, ["electric"] = 2.0, ["grass"] = 0.5, ["poison"] = 2.0, ["flying"] = 0.0, ["bug"] = 0.5, ["rock"] = 2.0, ["steel"] = 2.0 },
-            ["flying"] = new() { ["electric"] = 0.5, ["grass"] = 2.0, ["fighting"] = 2.0, ["bug"] = 2.0, ["rock"] = 0.5, ["steel"] = 0.5 },
-            ["psychic"] = new() { ["fighting"] = 2.0, ["poison"] = 2.0, ["psychic"] = 0.5, ["dark"] = 0.0, ["steel"] = 0.5 },
-            ["bug"] = new() { ["fire"] = 0.5, ["grass"] = 2.0, ["fighting"] = 0.5, ["poison"] = 0.5, ["flying"] = 0.5, ["psychic"] = 2.0, ["ghost"] = 0.5, ["dark"] = 2.0, ["steel"] = 0.5, ["fairy"] = 0.5 },
-            ["rock"] = new() { ["fire"] = 2.0, ["ice"] = 2.0, ["fighting"] = 0.5, ["ground"] = 0.5, ["flying"] = 2.0, ["bug"] = 2.0, ["steel"] = 0.5 },
-            ["ghost"] = new() { ["normal"] = 0.0, ["psychic"] = 2.0, ["ghost"] = 2.0, ["dark"] = 0.5 },
-            ["dragon"] = new() { ["dragon"] = 2.0, ["steel"] = 0.5, ["fairy"] = 0.0 },
-            ["dark"] = new() { ["fighting"] = 0.5, ["psychic"] = 2.0, ["ghost"] = 2.0, ["dark"] = 0.5, ["fairy"] = 0.5 },
-            ["steel"] = new() { ["fire"] = 0.5, ["water"] = 0.5, ["electric"] = 0.5, ["ice"] = 2.0, ["rock"] = 2.0, ["steel"] = 0.5, ["fairy"] = 2.0 },
-            ["fairy"] = new() { ["fire"] = 0.5, ["fighting"] = 2.0, ["poison"] = 0.5, ["dragon"] = 2.0, ["dark"] = 2.0, ["steel"] = 0.5 }
-        };
+        var typeChart = TypeEffectiveness.TypeChart;
         
         if (typeChart.ContainsKey(attackType) && typeChart[attackType].ContainsKey(defenderType))
         {
@@ -1104,9 +742,7 @@
         bool isHO = archetype == "Hyper Offense";
         
         // Priority moves list
-        var priorityMoves = new[] { "Extreme Speed", "Sucker Punch", "Shadow Sneak", "Aqua Jet", "Ice Shard",
-            "Mach Punch", "Bullet Punch", "Vacuum Wave", "Water Shuriken", "Accelerock", "Quick Attack",
-            "First Impression", "Jet Punch", "Aqua Step", "Grassy Glide", "Fake Out", "Thunderclap" };
+        var priorityMoves = MoveConstants.PriorityMoves;
         
         // 1. Priority Move Check
         if (!isStall && !isSemiStall)
@@ -1127,14 +763,14 @@
             checks.Add(new CheckResult
             {
                 Name = "Priority Move",
-                Status = hasPriority ? "Pass" : "Fail",
+                Status = hasPriority ? CheckStatus.Pass : CheckStatus.Fail,
                 Description = "Preferable to have at least one Pokemon with a priority move",
                 Details = detailsText
             });
         }
         else
         {
-            checks.Add(new CheckResult { Name = "Priority Move", Status = "Skip", Description = $"{archetype} teams don't require priority moves" });
+            checks.Add(new CheckResult { Name = "Priority Move", Status = CheckStatus.Skip, Description = $"{archetype} teams don't require priority moves" });
         }
         
         // 2. Fast Pokemon Check (350+ calculated speed)
@@ -1145,14 +781,14 @@
             checks.Add(new CheckResult
             {
                 Name = "Fast Pokemon",
-                Status = hasFastMon ? "Pass" : "Warning",
+                Status = hasFastMon ? CheckStatus.Pass : CheckStatus.Warning,
                 Description = "Nice to have a Pokemon with 350+ speed",
                 Details = hasFastMon ? $"Found Pokemon with {fastestSpeed} speed" : $"Fastest Pokemon has {fastestSpeed} speed - consider adding a faster Pokemon"
             });
         }
         else
         {
-            checks.Add(new CheckResult { Name = "Fast Pokemon", Status = "Skip", Description = $"{archetype} teams don't require fast Pokemon" });
+            checks.Add(new CheckResult { Name = "Fast Pokemon", Status = CheckStatus.Skip, Description = $"{archetype} teams don't require fast Pokemon" });
         }
         
         // 3. Hazards Check
@@ -1598,56 +1234,5 @@
         errorMessage = "";
     }
 
-    // PokeAPI response classes
-    public class PokeApiResponse
-    {
-        public Sprites? Sprites { get; set; }
-        public List<PokemonTypeSlot>? Types { get; set; }
-        public List<PokemonStat>? Stats { get; set; }
-    }
 
-    public class Sprites
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("front_default")]
-        public string? FrontDefault { get; set; }
-    }
-    
-    public class PokemonTypeSlot
-    {
-        public int Slot { get; set; }
-        public PokeApiTypeInfo? Type { get; set; }
-    }
-    
-    public class PokeApiTypeInfo
-    {
-        public string? Name { get; set; }
-    }
-    
-    public class ItemApiResponse
-    {
-        public ItemSprites? Sprites { get; set; }
-    }
-    
-    public class ItemSprites
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("default")]
-        public string? Default { get; set; }
-    }
-    
-    public class MoveApiResponse
-    {
-        public PokeApiTypeInfo? Type { get; set; }
-    }
-    
-    public class PokemonStat
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("base_stat")]
-        public int BaseStat { get; set; }
-        public StatInfo? Stat { get; set; }
-    }
-    
-    public class StatInfo
-    {
-        public string? Name { get; set; }
-    }
 }
