@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Acromo",
   "resources": {
-    "hash": "sha256-RFR19zdJkJ3TfINU8EZ7Jawrh11RUdmx3ZdKRX9+cD4=",
+    "hash": "sha256-2mktZi5nErsMrtlJHH+2rGDeVEgSZiwEDBmKdyL5UCw=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-vtotCeXt2UD6oc459laJT32vBgigZ+eLoUmdeFkvYDk="
     },
@@ -25,7 +25,7 @@
       "Microsoft.Extensions.Configuration.Abstractions.wasm": "sha256-XR+WUfg8LtnrwdXFBnV+qO3ROyp6cYCfl1AZajIAheM=",
       "Microsoft.Extensions.Configuration.Json.wasm": "sha256-3UBRwvCkKtraRUarsIBDS05tA2rRm1leCB6EDfyVjeA=",
       "Microsoft.Extensions.DependencyInjection.wasm": "sha256-mw/Sy1n9J6R0bUD0GI5MtB/zP+wyzOPiVsOTA/1C4NA=",
-      "Microsoft.Extensions.DependencyInjection.Abstractions.wasm": "sha256-EE4aMdC1NviAfCzXekv/X7IMpCgnKfK0OBhw9L2lgOs=",
+      "Microsoft.Extensions.DependencyInjection.Abstractions.wasm": "sha256-1Mn77WO9t9fBSCtmWqdzNdg+VDJvTA4XXetOwNP81Tw=",
       "Microsoft.Extensions.Logging.wasm": "sha256-lronxO5RVywLbFhme/ExIuzFePlP8EosZyZteUaMAwE=",
       "Microsoft.Extensions.Logging.Abstractions.wasm": "sha256-7Zu9mf5A66dSbrtfWeqyG3c+7z4wLPxz6mRfvZWMXy8=",
       "Microsoft.Extensions.Options.wasm": "sha256-jU67Fez8pypOqHShO/C6RHAZmEFgoq4RZGZtcWXOF08=",
@@ -44,13 +44,13 @@
       "System.Net.Primitives.wasm": "sha256-qQQJFBo8rvgAI/UP5cWf04bempHFvT5eSfb8xhLv0og=",
       "System.Private.Uri.wasm": "sha256-OuUWCATbiNXIKPRgx9LJTCbSEl31/lZKuCSX4BIdXyk=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-HoMTDuTDnPPGz33cAhUPWnjlBFwLPlXJmatxg7HMeac=",
-      "System.Runtime.wasm": "sha256-plpA1FZFfH17TUvT+jfF5gH6uaWQ/Bj47ek6wF8m3fE=",
+      "System.Runtime.wasm": "sha256-WmRGcn2gi094/VkjDbmqcOzfkbreDcfkLpqZq9RoeqQ=",
       "System.Text.Encodings.Web.wasm": "sha256-W1+3Cs/g9HhgLy8QR8yJAQbxhEi61ZFQGNgOUretBKQ=",
       "System.Text.Json.wasm": "sha256-0oaDo0pgedI+S5uqXj49FCH1VrjHd8IG07i+Fc09mXc=",
       "System.Text.RegularExpressions.wasm": "sha256-vUObkE4I4lhxv9ebevwtx21e7JEMhx6kYR1SxLVFvZc=",
       "System.Web.HttpUtility.wasm": "sha256-IsKM0DOxo4rODeHDnV4j7Dt70uLhQwcTp8tk93ZIgqs=",
-      "System.Private.CoreLib.wasm": "sha256-lc/aD6fXW1ZqU/X2nc0qgPu0/if132B0jLNa8GpGBnA=",
-      "Acromo.wasm": "sha256-zw+05FMExsuWW2k6LYRCkVrHCsME9ArBcVHPzyWJILc="
+      "System.Private.CoreLib.wasm": "sha256-PPHvjHxyVyrvrzz5s4ZE2mkC9rzcfwzW5m2eZn7k92Q=",
+      "Acromo.wasm": "sha256-anzE3iKf5WQfaunyuOBMraxRXRzepFyZPnromPLYWPc="
     }
   },
   "cacheBootResources": true,
