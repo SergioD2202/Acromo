@@ -1,0 +1,18 @@
+@namespace Acromo
+@* Component for displaying a single super effective coverage type row *@
+
+<div class="coverage-item">
+    <span class="type-badge type-@Coverage.Type.ToLower()">@Coverage.Type</span>
+    <span class="coverage-count">Hits @Coverage.Count Pokemon</span>
+    <div class="affected-pokemon">
+        @foreach (var pokemon in Coverage.AffectedPokemon)
+        {
+            <span class="pokemon-name">@pokemon</span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public SuperEffectiveCoverage Coverage { get; set; } = null!;
+}

@@ -4,6 +4,24 @@ namespace Acromo;
 
 public class TeamParserService
 {
+    private static readonly string[] SkippedPrefixes = { "-", "Ability:", "Tera Type:", "EVs:", "IVs:", "Level:" };
+
+    // Dictionary mapping prefixes to their respective parsing actions
+    private readonly Dictionary<string, Action<PokemonData, string>> _attributeParsers;
+
+    public TeamParserService()
+    {
+        _attributeParsers = new Dictionary<string, Action<PokemonData, string>>
+        {
+            ["Ability:"] = (pokemon, line) => pokemon.Ability = line.Replace("Ability:", "").Trim(),
+            ["Tera Type:"] = (pokemon, line) => pokemon.TeraType = line.Replace("Tera Type:", "").Trim(),
+            ["Level:"] = (pokemon, line) => pokemon.Level = line.Replace("Level:", "").Trim(),
+            ["EVs:"] = (pokemon, line) => pokemon.EVs = line.Replace("EVs:", "").Trim(),
+            ["IVs:"] = (pokemon, line) => pokemon.IVs = line.Replace("IVs:", "").Trim(),
+            ["-"] = (pokemon, line) => pokemon.Moves.Add(new MoveInfo { Name = line.Substring(1).Trim() })
+        };
+    }
+
     public List<PokemonData> ParseTeam(string teamInput)
     {
         var pokemonTeam = new List<PokemonData>();
@@ -22,14 +40,9 @@ public class TeamParserService
             {
                 var trimmedLine = line.Trim();
                 
-                // New Pokemon (first line with name)
-                if (!trimmedLine.StartsWith("-") && 
-                    !trimmedLine.StartsWith("Ability:") && 
-                    !trimmedLine.StartsWith("Tera Type:") &&
-                    !trimmedLine.StartsWith("EVs:") &&
-                    !trimmedLine.StartsWith("IVs:") &&
-                    !trimmedLine.StartsWith("Level:") &&
-                    !trimmedLine.Contains("Nature"))
+                if (string.IsNullOrWhiteSpace(trimmedLine)) continue;
+
+                if (!ShouldSkipLine(trimmedLine))
                 {
                     if (currentPokemon != null)
                     {
@@ -37,84 +50,11 @@ public class TeamParserService
                     }
                     
                     currentPokemon = new PokemonData();
-                    
-                    // Parse Name, Item, Gender
-                    // Format: Name @ Item
-                    // Format: Nickname (Species) @ Item
-                    // Format: Name (M) @ Item
-                    
-                    var parts = trimmedLine.Split('@');
-                    var namePart = parts[0].Trim();
-                    
-                    // Handle Gender
-                    if (namePart.EndsWith("(M)") || namePart.EndsWith("(F)"))
-                    {
-                        currentPokemon.Gender = namePart.Substring(namePart.Length - 3);
-                        namePart = namePart.Substring(0, namePart.Length - 3).Trim();
-                    }
-                    
-                    // Handle nicknames: "Nickname (Species)" -> extract "Species"
-                    // If the name ends with ')' and has a '(', it likely has a nickname
-                    if (namePart.EndsWith(")") && namePart.Contains("("))
-                    {
-                        int lastOpenParen = namePart.LastIndexOf('(');
-                        if (lastOpenParen != -1)
-                        {
-                            var possibleSpecies = namePart.Substring(lastOpenParen + 1, namePart.Length - lastOpenParen - 2);
-                            var possibleNickname = namePart.Substring(0, lastOpenParen).Trim();
-                            
-                            // Simple check - if the part in parens is a valid name format
-                            // In a real app we might validate against a list of Pokemon
-                            currentPokemon.Name = possibleSpecies;
-                            currentPokemon.Nickname = possibleNickname;
-                        }
-                    }
-                    else
-                    {
-                        currentPokemon.Name = namePart;
-                    }
-                    
-                    if (parts.Length > 1)
-                    {
-                        currentPokemon.Item = parts[1].Trim();
-                    }
+                    ParsePokemonHeader(currentPokemon, trimmedLine);
                 }
                 else if (currentPokemon != null)
                 {
-                    // Parse other attributes
-                    if (trimmedLine.StartsWith("Ability:"))
-                    {
-                        currentPokemon.Ability = trimmedLine.Replace("Ability:", "").Trim();
-                    }
-                    else if (trimmedLine.StartsWith("Tera Type:"))
-                    {
-                        currentPokemon.TeraType = trimmedLine.Replace("Tera Type:", "").Trim();
-                    }
-                    else if (trimmedLine.StartsWith("Level:"))
-                    {
-                        currentPokemon.Level = trimmedLine.Replace("Level:", "").Trim();
-                    }
-                    else if (trimmedLine.StartsWith("EVs:"))
-                    {
-                        currentPokemon.EVs = trimmedLine.Replace("EVs:", "").Trim();
-                    }
-                    else if (trimmedLine.StartsWith("IVs:"))
-                    {
-                        currentPokemon.IVs = trimmedLine.Replace("IVs:", "").Trim();
-                    }
-                    else if (trimmedLine.EndsWith("Nature"))
-                    {
-                        var natureParts = trimmedLine.Split(' ');
-                        if (natureParts.Length > 0)
-                        {
-                            currentPokemon.Nature = natureParts[0];
-                        }
-                    }
-                    else if (trimmedLine.StartsWith("-"))
-                    {
-                        var moveName = trimmedLine.Substring(1).Trim();
-                        currentPokemon.Moves.Add(new MoveInfo { Name = moveName });
-                    }
+                    ParseAttribute(currentPokemon, trimmedLine);
                 }
             }
             
@@ -127,9 +67,77 @@ public class TeamParserService
         catch (Exception ex)
         {
             Console.WriteLine($"Error parsing team: {ex.Message}");
-            // Return whatever we managed to parse
         }
 
         return pokemonTeam;
+    }
+
+    private bool ShouldSkipLine(string line)
+    {
+        return SkippedPrefixes.Any(p => line.StartsWith(p)) || line.Contains("Nature");
+    }
+
+    private void ParsePokemonHeader(PokemonData pokemon, string line)
+    {
+        // Format: Name @ Item
+        // Format: Nickname (Species) @ Item
+        // Format: Name (M) @ Item
+        
+        var parts = line.Split('@');
+        var namePart = parts[0].Trim();
+        
+        // Handle Gender
+        if (namePart.EndsWith("(M)") || namePart.EndsWith("(F)"))
+        {
+            pokemon.Gender = namePart.Substring(namePart.Length - 3);
+            namePart = namePart.Substring(0, namePart.Length - 3).Trim();
+        }
+        
+        // Handle nicknames: "Nickname (Species)" -> extract "Species"
+        if (namePart.EndsWith(")") && namePart.Contains("("))
+        {
+            int lastOpenParen = namePart.LastIndexOf('(');
+            if (lastOpenParen != -1)
+            {
+                var possibleSpecies = namePart.Substring(lastOpenParen + 1, namePart.Length - lastOpenParen - 2);
+                var possibleNickname = namePart.Substring(0, lastOpenParen).Trim();
+                
+                pokemon.Name = possibleSpecies;
+                pokemon.Nickname = possibleNickname;
+            }
+        }
+        else
+        {
+            pokemon.Name = namePart;
+        }
+        
+        if (parts.Length > 1)
+        {
+            pokemon.Item = parts[1].Trim();
+        }
+    }
+
+    private void ParseAttribute(PokemonData pokemon, string line)
+    {
+        // Handle Nature separately as it has a different pattern (ends with "Nature")
+        if (line.EndsWith("Nature"))
+        {
+            var natureParts = line.Split(' ');
+            if (natureParts.Length > 0)
+            {
+                pokemon.Nature = natureParts[0];
+            }
+            return;
+        }
+
+        // Check each registered attribute parser
+        foreach (var (prefix, parser) in _attributeParsers)
+        {
+            if (line.StartsWith(prefix))
+            {
+                parser(pokemon, line);
+                return;
+            }
+        }
     }
 }

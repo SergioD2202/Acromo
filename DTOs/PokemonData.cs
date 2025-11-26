@@ -25,4 +25,7 @@ public class PokemonData
     public int BaseSpecialAttack { get; set; } = 0;
     public int BaseSpecialDefense { get; set; } = 0;
     public int BaseSpeed { get; set; } = 0;
+
+    public bool HasDataFetchError { get; set; }
+    public string DataFetchErrorMessage { get; set; } = "";
 }

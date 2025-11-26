@@ -1,0 +1,32 @@
+@namespace Acromo
+@* Component for displaying a single checklist item *@
+
+<div class="check-item check-@Check.Status.ToLower()">
+    <div class="check-header">
+        <span class="check-icon">@GetCheckIcon(Check.Status)</span>
+        <span class="check-name">@Check.Name</span>
+        <span class="check-status-badge">@Check.Status</span>
+    </div>
+    <p class="check-description">@Check.Description</p>
+    @if (!string.IsNullOrEmpty(Check.Details))
+    {
+        <p class="check-details">@Check.Details</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public CheckResult Check { get; set; } = null!;
+
+    private string GetCheckIcon(string status)
+    {
+        return status switch
+        {
+            CheckStatus.Pass => "✅",
+            CheckStatus.Fail => "❌",
+            CheckStatus.Skip => "⏭️",
+            CheckStatus.Warning => "⚠️",
+            _ => "❓"
+        };
+    }
+}

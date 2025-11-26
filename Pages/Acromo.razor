@@ -32,7 +32,7 @@
         
         <h3>Analysis Criteria</h3>
         <ul>
-            <li><strong>Team Archetypes:</strong> Detects Stall, Semi-Stall, Hyper Offense, or Balanced team compositions</li>
+            <li><strong>Team Archetypes:</strong> Detects Stall, Semi-Stall, Hyper Offense, Bulky Balance, Offense, or Balanced team compositions</li>
             <li><strong>Type Coverage:</strong> Analyzes which types can hit your team for neutral or super effective damage</li>
             <li><strong>Competitive Checklist:</strong> Evaluates 15+ competitive criteria including:
                 <ul>
@@ -129,6 +129,20 @@
             ⚠️ @errorMessage
         </div>
     }
+
+    @if (pokemonTeam.Any(p => p.HasDataFetchError))
+    {
+        <div class="alert alert-warning" style="background-color: #fff3cd; color: #856404; border-color: #ffeeba; padding: 1rem; margin-bottom: 1rem; border-radius: 0.25rem;">
+            <h3 style="margin-top: 0; font-size: 1.2rem;">⚠️ Data Fetch Warnings</h3>
+            <p>Some Pokemon data could not be loaded. Analysis may be incomplete.</p>
+            <ul style="margin-bottom: 0;">
+                @foreach (var p in pokemonTeam.Where(p => p.HasDataFetchError))
+                {
+                    <li><strong>@p.Name:</strong> @p.DataFetchErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
     
     @if (pokemonTeam.Any() && typeAnalysis != null)
     {
@@ -163,16 +177,7 @@
                     <p class="analysis-description">These types can hit 2 or more Pokemon for super effective damage:</p>
                     @foreach (var coverage in typeAnalysis.SuperEffectiveCoverageTypes)
                     {
-                        <div class="coverage-item">
-                            <span class="type-badge type-@coverage.Type.ToLower()">@coverage.Type</span>
-                            <span class="coverage-count">Hits @coverage.Count Pokemon</span>
-                            <div class="affected-pokemon">
-                                @foreach (var pokemon in coverage.AffectedPokemon)
-                                {
-                                    <span class="pokemon-name">@pokemon</span>
-                                }
-                            </div>
-                        </div>
+                        <SuperEffectiveCoverageRow Coverage="@coverage" />
                     }
                 </div>
             }
@@ -218,18 +223,7 @@
                 
                 @foreach (var check in teamRating.CheckResults)
                 {
-                    <div class="check-item check-@check.Status.ToLower()">
-                        <div class="check-header">
-                            <span class="check-icon">@GetCheckIcon(check.Status)</span>
-                            <span class="check-name">@check.Name</span>
-                            <span class="check-status-badge">@check.Status</span>
-                        </div>
-                        <p class="check-description">@check.Description</p>
-                        @if (!string.IsNullOrEmpty(check.Details))
-                        {
-                            <p class="check-details">@check.Details</p>
-                        }
-                    </div>
+                    <ChecklistItem Check="@check" />
                 }
             </div>
             
@@ -259,18 +253,6 @@
     private string errorMessage = "";
     private TypeAnalysis? typeAnalysis = null;
     private TeamRating? teamRating = null;
-
-    private string GetCheckIcon(string status)
-    {
-        return status switch
-        {
-            CheckStatus.Pass => "✅",
-            CheckStatus.Fail => "❌",
-            CheckStatus.Skip => "⏭️",
-            CheckStatus.Warning => "⚠️",
-            _ => "❓"
-        };
-    }
 
     private async Task FetchTeamFromUrl()
     {
@@ -353,58 +335,77 @@
 
     private async Task FetchPokemonSprite(PokemonData pokemon)
     {
+        var tasks = new List<Task>();
+
+        // 1. Fetch Pokemon Data (Sprite, Types, Stats)
+        tasks.Add(FetchPokemonData(pokemon));
+
+        // 2. Fetch Item Data
+        if (!string.IsNullOrEmpty(pokemon.Item))
+        {
+            tasks.Add(FetchItemSprite(pokemon));
+        }
+
+        // 3. Fetch Move Data
+        foreach (var move in pokemon.Moves)
+        {
+            tasks.Add(FetchMoveType(move));
+        }
+
+        await Task.WhenAll(tasks);
+        StateHasChanged(); // Ensure UI updates after fetching
+    }
+
+    private async Task FetchPokemonData(PokemonData pokemon)
+    {
         try
         {
             var response = await PokeAPI.GetPokemonDataAsync(pokemon.Name);
             
-            if (response?.Sprites?.FrontDefault != null)
+            if (response == null)
             {
-                pokemon.SpriteUrl = response.Sprites.FrontDefault;
+                pokemon.HasDataFetchError = true;
+                pokemon.DataFetchErrorMessage = "Could not fetch data from PokeAPI. Check spelling or nickname.";
             }
-            
-            // Fetch types
-            if (response?.Types != null)
+            else
             {
-                pokemon.Types = response.Types.Select(t => t.Type?.Name ?? "").Where(n => !string.IsNullOrEmpty(n)).ToList();
-            }
-            
-            // Fetch base stats
-            if (response?.Stats != null)
-            {
-                foreach (var stat in response.Stats)
+                if (response.Sprites?.FrontDefault != null)
                 {
-                    switch (stat.Stat?.Name)
+                    pokemon.SpriteUrl = response.Sprites.FrontDefault;
+                }
+                
+                // Fetch types
+                if (response.Types != null)
+                {
+                    pokemon.Types = response.Types.Select(t => t.Type?.Name ?? "").Where(n => !string.IsNullOrEmpty(n)).ToList();
+                }
+                
+                // Fetch base stats
+                if (response.Stats != null)
+                {
+                    foreach (var stat in response.Stats)
                     {
-                        case "hp": pokemon.BaseHP = stat.BaseStat; break;
-                        case "attack": pokemon.BaseAttack = stat.BaseStat; break;
-                        case "defense": pokemon.BaseDefense = stat.BaseStat; break;
-                        case "special-attack": pokemon.BaseSpecialAttack = stat.BaseStat; break;
-                        case "special-defense": pokemon.BaseSpecialDefense = stat.BaseStat; break;
-                        case "speed": pokemon.BaseSpeed = stat.BaseStat; break;
+                        switch (stat.Stat?.Name)
+                        {
+                            case "hp": pokemon.BaseHP = stat.BaseStat; break;
+                            case "attack": pokemon.BaseAttack = stat.BaseStat; break;
+                            case "defense": pokemon.BaseDefense = stat.BaseStat; break;
+                            case "special-attack": pokemon.BaseSpecialAttack = stat.BaseStat; break;
+                            case "special-defense": pokemon.BaseSpecialDefense = stat.BaseStat; break;
+                            case "speed": pokemon.BaseSpeed = stat.BaseStat; break;
+                        }
                     }
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // If sprite fetch fails, leave it empty (will show placeholder)
+            pokemon.HasDataFetchError = true;
+            pokemon.DataFetchErrorMessage = $"Error: {ex.Message}";
             pokemon.SpriteUrl = "";
         }
-        
-        // Fetch item sprite if item exists
-        if (!string.IsNullOrEmpty(pokemon.Item))
-        {
-            await FetchItemSprite(pokemon);
-        }
-        
-        // Fetch move types
-        foreach (var move in pokemon.Moves)
-        {
-            await FetchMoveType(move);
-        }
-        StateHasChanged(); // Ensure UI updates after fetching
     }
-    
+
     private async Task FetchMoveType(MoveInfo move)
     {
         var moveType = await PokeAPI.GetMoveTypeAsync(move.Name);
