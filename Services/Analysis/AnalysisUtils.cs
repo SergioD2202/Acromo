@@ -149,6 +149,13 @@ public static class AnalysisUtils
             return p.EVs.Contains("252 Atk") || p.EVs.Contains("252 SpA") || p.EVs.Contains("252 Spe");
         });
         
+        // 0. Detect Sun Team (has Drought ability)
+        var hasDrought = pokemonTeam.Any(p => p.Ability == "Drought");
+        if (hasDrought)
+        {
+            return ("Sun Team", "Offensive weather team built around Drought, utilizing sun-boosted sweepers and speed control");
+        }
+        
         // 1. Detect Stall (5+ bulky mons)
         if (bulkyCount >= 5)
         {

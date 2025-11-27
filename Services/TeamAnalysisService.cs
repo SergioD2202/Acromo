@@ -131,7 +131,7 @@ public class TeamAnalysisService
             Archetype = archetype,
             IsStall = archetype == "Stall",
             IsSemiStall = archetype == "Semi-Stall",
-            IsHO = archetype == "Hyper Offense"
+            IsHO = archetype == "Hyper Offense" // Only true HO teams skip certain checks
         };
         
         foreach (var check in _checks)

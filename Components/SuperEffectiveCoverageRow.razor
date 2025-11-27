@@ -1,16 +1,92 @@
 @namespace Acromo
 @* Component for displaying a single super effective coverage type row *@
 
-<div class="coverage-item">
-    <span class="type-badge type-@Coverage.Type.ToLower()">@Coverage.Type</span>
-    <span class="coverage-count">Hits @Coverage.Count Pokemon</span>
-    <div class="affected-pokemon">
-        @foreach (var pokemon in Coverage.AffectedPokemon)
-        {
-            <span class="pokemon-name">@pokemon</span>
-        }
+<div class="coverage-item-gen5">
+    <div class="type-header-gen5">
+        <span class="type-badge type-@Coverage.Type.ToLower()">@Coverage.Type.ToUpper()</span>
+    </div>
+    <div class="coverage-details-gen5">
+        <span class="hit-count-gen5">Hits @Coverage.Count Pokemon</span>
+        <div class="affected-pokemon-gen5">
+            @foreach (var pokemon in Coverage.AffectedPokemon)
+            {
+                <span class="pokemon-chip-gen5">@pokemon</span>
+            }
+        </div>
     </div>
 </div>
+
+<style>
+    .coverage-item-gen5 {
+        background: linear-gradient(135deg, #2a4a5e 0%, #1e3544 100%);
+        border: 3px solid #4a6a7e;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    .coverage-item-gen5:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .type-header-gen5 {
+        background: linear-gradient(90deg, rgba(74, 106, 126, 0.4) 0%, rgba(42, 74, 94, 0.2) 100%);
+        padding: 0.5rem 1rem;
+        border-bottom: 2px solid #4a6a7e;
+    }
+
+    .type-header-gen5 .type-badge {
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.35rem 1rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .coverage-details-gen5 {
+        padding: 0.75rem 1rem;
+        background: rgba(30, 53, 68, 0.3);
+    }
+
+    .hit-count-gen5 {
+        display: block;
+        color: #c8d8e4;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .affected-pokemon-gen5 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .pokemon-chip-gen5 {
+        background: linear-gradient(135deg, #3a5a6e 0%, #2a4a5e 100%);
+        color: #e8f4f8;
+        padding: 0.3rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 2px solid #5a7a8e;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        transition: all 0.15s ease;
+    }
+
+    .pokemon-chip-gen5:hover {
+        background: linear-gradient(135deg, #4a6a7e 0%, #3a5a6e 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+</style>
 
 @code {
     [Parameter]

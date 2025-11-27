@@ -30,6 +30,6 @@ public static class AbilityConstants
 
     public static readonly string[] ContactPunishAbilities = 
     { 
-        "Static", "Flame Body", "Rough Skin" 
+        "Static", "Flame Body", "Rough Skin", "Poison Point"
     };
 }

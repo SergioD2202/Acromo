@@ -41,8 +41,16 @@ public class FastPokemonCheck : ITeamCheck
             return new CheckResult { Name = "Fast Pokemon", Status = CheckStatus.Skip, Description = "Defensive teams don't prioritize speed tiers" };
         }
 
-        var hasFastMon = team.Any(p => AnalysisUtils.CalculateFinalSpeed(p) >= 350);
-        var fastestSpeed = team.Any() ? team.Max(p => AnalysisUtils.CalculateFinalSpeed(p)) : 0;
+        bool isSunTeam = context.Archetype == "Sun Team";
+        
+        var fastPokemon = team.Select(p => new
+        {
+            Pokemon = p,
+            Speed = CalculateEffectiveSpeed(p, isSunTeam)
+        }).ToList();
+
+        var hasFastMon = fastPokemon.Any(p => p.Speed >= 350);
+        var fastestSpeed = fastPokemon.Any() ? fastPokemon.Max(p => p.Speed) : 0;
         
         return new CheckResult
         {
@@ -52,7 +60,55 @@ public class FastPokemonCheck : ITeamCheck
             Details = $"Fastest speed: {fastestSpeed}"
         };
     }
+
+    private int CalculateEffectiveSpeed(PokemonData pokemon, bool isSunTeam)
+    {
+        // Get speed after EVs and Nature are applied
+        int finalSpeedAfterEVs = AnalysisUtils.CalculateFinalSpeed(pokemon);
+        
+        // Chlorophyll doubles speed in sun (ability boost comes AFTER EV investment)
+        if (isSunTeam && pokemon.Ability == "Chlorophyll")
+        {
+            return finalSpeedAfterEVs * 2;
+        }
+        
+        // Protosynthesis boosts highest stat by 1.5x (ability boost comes AFTER EV investment)
+        // Check if Speed is the highest stat after EV investment
+        if (pokemon.Ability == "Protosynthesis" && IsSpeedHighestStat(pokemon))
+        {
+            return (int)(finalSpeedAfterEVs * 1.5);
+        }
+        
+        return finalSpeedAfterEVs;
+    }
+
+    private bool IsSpeedHighestStat(PokemonData pokemon)
+    {
+        // Check if Speed has the highest EV investment
+        if (pokemon.EVs.Contains("252 Spe"))
+        {
+            // If Speed has 252 EVs and no other stat has 252, it's likely the highest
+            bool hasOther252 = pokemon.EVs.Contains("252 Atk") || 
+                               pokemon.EVs.Contains("252 Def") || 
+                               pokemon.EVs.Contains("252 SpA") || 
+                               pokemon.EVs.Contains("252 SpD") ||
+                               pokemon.EVs.Contains("252 HP");
+            
+            // If Speed is the only 252 EV stat, assume it's the highest
+            if (!hasOther252)
+            {
+                return true;
+            }
+            
+            // If there are multiple 252 EV stats, we need to compare base stats
+            // For simplicity, we'll assume Speed is highest if it has 252 EVs and base speed >= 100
+            return pokemon.BaseSpeed >= 100;
+        }
+        
+        return false;
+    }
 }
+
 
 public class EntryHazardsCheck : ITeamCheck
 {
