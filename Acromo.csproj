@@ -5,6 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Acromo</RootNamespace>
+    
+    <!-- Hot Reload Configuration for Development -->
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <BlazorEnableCompression>false</BlazorEnableCompression>
+    <BlazorWebAssemblyLoadAllGlobalizationData>false</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
 
   <ItemGroup>
