@@ -360,3 +360,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# AI-generated documentation and guides
+# These are temporary files created during development
+implementation_plan.md
+walkthrough.md
+task.md
+HOT_RELOAD_GUIDE.md
+TEMP_DEBUG_REFERENCE.md
+*_GUIDE.md
+*_guide.md
