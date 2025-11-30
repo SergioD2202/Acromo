@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Acromo",
   "resources": {
-    "hash": "sha256-7ZbBuIuJ7NxOFYVPaTiphcuPoaBsS0j4X2+4fEKyTh0=",
+    "hash": "sha256-zqDuM3SgnnDfNPHJrmmpXv4O0BYXSJBI+pFvPBl1Fqo=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-vtotCeXt2UD6oc459laJT32vBgigZ+eLoUmdeFkvYDk="
     },
@@ -44,13 +44,13 @@
       "System.Net.Primitives.wasm": "sha256-qQQJFBo8rvgAI/UP5cWf04bempHFvT5eSfb8xhLv0og=",
       "System.Private.Uri.wasm": "sha256-OuUWCATbiNXIKPRgx9LJTCbSEl31/lZKuCSX4BIdXyk=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-HoMTDuTDnPPGz33cAhUPWnjlBFwLPlXJmatxg7HMeac=",
-      "System.Runtime.wasm": "sha256-E6NegRWrGekgT2kxlHV2uaqd9ZZF7aPM3T4yyQZLKzg=",
+      "System.Runtime.wasm": "sha256-eJTP2wZm7bC+bGAt628djbubjWG72RAZzpeDYwn6JtE=",
       "System.Text.Encodings.Web.wasm": "sha256-W1+3Cs/g9HhgLy8QR8yJAQbxhEi61ZFQGNgOUretBKQ=",
       "System.Text.Json.wasm": "sha256-0oaDo0pgedI+S5uqXj49FCH1VrjHd8IG07i+Fc09mXc=",
       "System.Text.RegularExpressions.wasm": "sha256-vUObkE4I4lhxv9ebevwtx21e7JEMhx6kYR1SxLVFvZc=",
       "System.Web.HttpUtility.wasm": "sha256-IsKM0DOxo4rODeHDnV4j7Dt70uLhQwcTp8tk93ZIgqs=",
       "System.Private.CoreLib.wasm": "sha256-ouNiW47oCBjbEEfHnwyWaTuKujMOQ9H116g+N+tMbgg=",
-      "Acromo.wasm": "sha256-oD6WMBDjDB78E7RVI9pRZ5BN5Am+90BKHq110JXXmdQ="
+      "Acromo.wasm": "sha256-X9hYnzAAyodgMo43IZlXm+sL8va65NTiYoUJxW6Ad+Q="
     }
   },
   "cacheBootResources": true,
