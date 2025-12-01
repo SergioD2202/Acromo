@@ -1,0 +1,128 @@
+=== Team 1 (Sun) ===
+Torkoal @ Heat Rock  
+Ability: Drought  
+Tera Type: Ground  
+EVs: 104 HP / 252 SpA / 152 SpD  
+Quiet Nature  
+- Eruption  
+- Overheat  
+- Earthquake  
+- Stealth Rock  
+
+Hatterene @ Air Balloon  
+Ability: Magic Bounce  
+Tera Type: Ghost  
+EVs: 252 HP / 252 Def / 4 SpD  
+Relaxed Nature  
+IVs: 0 Atk / 0 Spe  
+- Trick Room  
+- Psychic Noise  
+- Dazzling Gleam  
+- Healing Wish  
+
+Raging Bolt @ Life Orb  
+Ability: Protosynthesis  
+Tera Type: Ghost  
+EVs: 36 Def / 252 SpA / 220 Spe  
+Modest Nature  
+IVs: 20 Atk  
+- Thunderclap  
+- Weather Ball  
+- Dragon Pulse  
+- Solar Beam  
+
+Slither Wing @ Assault Vest  
+Ability: Protosynthesis  
+Tera Type: Fire  
+EVs: 40 HP / 252 Atk / 216 Spe  
+Adamant Nature  
+- U-turn  
+- First Impression  
+- Earthquake  
+- Temper Flare  
+
+Venusaur @ Life Orb  
+Ability: Chlorophyll  
+Tera Type: Fire  
+EVs: 4 Atk / 252 SpA / 252 Spe  
+Naive Nature  
+- Growth  
+- Giga Drain  
+- Weather Ball  
+- Earthquake  
+
+Walking Wake @ Wise Glasses  
+Ability: Protosynthesis  
+Tera Type: Fairy  
+EVs: 12 HP / 244 SpA / 252 Spe  
+Timid Nature  
+- Hydro Steam  
+- Weather Ball  
+- Draco Meteor  
+- Flip Turn  
+
+=== Team 2 (Stall) ===
+Dondozo @ Leftovers  
+Ability: Unaware  
+Tera Type: Dragon  
+EVs: 248 HP / 252 Def / 8 Spe  
+Impish Nature  
+- Body Press  
+- Avalanche  
+- Rest  
+- Sleep Talk  
+
+Blissey @ Leftovers  
+Ability: Natural Cure  
+Tera Type: Dark  
+EVs: 20 HP / 252 Def / 236 SpD  
+Calm Nature  
+IVs: 0 Atk  
+- Seismic Toss  
+- Soft-Boiled  
+- Calm Mind  
+- Stealth Rock  
+
+Corviknight @ Leftovers  
+Ability: Pressure  
+Tera Type: Fighting  
+EVs: 252 HP / 252 Def / 4 SpD  
+Impish Nature  
+IVs: 0 Atk  
+- Iron Defense  
+- Defog  
+- Roost  
+- Body Press  
+
+Weezing-Galar @ Heavy-Duty Boots  
+Ability: Neutralizing Gas  
+Tera Type: Ghost  
+EVs: 252 HP / 244 Def / 12 Spe  
+Bold Nature  
+IVs: 0 Atk  
+- Will-O-Wisp  
+- Defog  
+- Pain Split  
+- Strange Steam  
+
+Gliscor @ Toxic Orb  
+Ability: Poison Heal  
+Tera Type: Water  
+EVs: 244 HP / 12 Def / 252 SpD  
+Careful Nature  
+IVs: 24 Spe  
+- Earthquake  
+- Spikes  
+- Knock Off  
+- Protect  
+
+Toxapex @ Leftovers  
+Ability: Regenerator  
+Tera Type: Steel  
+EVs: 252 HP / 252 SpD / 4 Spe  
+Calm Nature  
+IVs: 0 Atk  
+- Toxic  
+- Recover  
+- Toxic Spikes  
+- Haze  

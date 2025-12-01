@@ -134,8 +134,20 @@ public static class AnalysisUtils
         
         // Count defensive Pokemon (high HP/Def/SpD investment + recovery/status)
         var bulkyCount = pokemonTeam.Count(p => 
-            (defensiveAbilities.Contains(p.Ability) || p.Moves.Any(m => defensiveMoves.Contains(m.Name))) &&
-            (p.EVs.Contains("252 HP") && (p.EVs.Contains("252 Def") || p.EVs.Contains("252 SpD"))));
+        {
+            bool hasDefensiveTraits = defensiveAbilities.Contains(p.Ability) || p.Moves.Any(m => defensiveMoves.Contains(m.Name));
+            
+            // Check EVs using helper method
+            int hpEv = GetEVValue(p, "HP");
+            int defEv = GetEVValue(p, "Def");
+            int spdEv = GetEVValue(p, "SpD");
+            
+            // Check for significant investment in bulk (HP + Def + SpD >= 400)
+            // This handles optimized spreads (e.g. 248 HP) and mixed bulk (e.g. Blissey)
+            bool hasBulkInvestment = (hpEv + defEv + spdEv) >= 400;
+            
+            return hasDefensiveTraits && hasBulkInvestment;
+        });
         
         // Count offensive threats (using base stats + EV investment)
         var offensiveCount = pokemonTeam.Count(p => 
