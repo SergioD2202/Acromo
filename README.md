@@ -92,6 +92,8 @@ Acromo/
 3.  Click **Parse Team**.
 4.  Review the generated analysis, including your team's archetype, coverage gaps, and competitive rating.
 
-## 📄 License
+## ⚖️ Disclaimer & Fair Use
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is created for educational purposes only. It uses third-party assets, including Pokémon names, images, and other related media, which are the intellectual property of The Pokémon Company, Nintendo, Game Freak, and Creatures Inc.
+
+These assets are used under the principles of **Fair Use** for educational and informational purposes. This project is not affiliated with, endorsed by, or sponsored by The Pokémon Company or any of its partners. No copyright infringement is intended.
