@@ -10,6 +10,7 @@ public class TeamAnalysisService
     {
         _checks = new List<ITeamCheck>
         {
+            new BannedMoveCheck(),       // Legality: must be first so ban warnings surface immediately
             new PriorityMoveCheck(),
             new FastPokemonCheck(),
             new EntryHazardsCheck(),

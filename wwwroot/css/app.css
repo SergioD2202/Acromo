@@ -1675,6 +1675,25 @@ main {
     opacity: 0.7;
 }
 
+/* Legality violation — pulsing red border to make it unmissable */
+.check-item.check-ban {
+    border-left-color: #dc2626;
+    background: rgba(220, 38, 38, 0.07);
+    box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.25);
+    animation: ban-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ban-pulse {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.25); }
+    50%       { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.45); }
+}
+
+.check-ban .check-status-badge {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+}
+
+
 .check-header {
     display: flex;
     align-items: center;

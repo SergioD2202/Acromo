@@ -22,11 +22,12 @@
     {
         return status switch
         {
-            CheckStatus.Pass => "✅",
-            CheckStatus.Fail => "❌",
-            CheckStatus.Skip => "⏭️",
+            CheckStatus.Pass    => "✅",
+            CheckStatus.Fail    => "❌",
+            CheckStatus.Skip    => "⏭️",
             CheckStatus.Warning => "⚠️",
-            _ => "❓"
+            CheckStatus.Ban     => "⛔",
+            _                   => "❓"
         };
     }
 }
